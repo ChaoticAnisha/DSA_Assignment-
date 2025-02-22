@@ -1,4 +1,4 @@
-package Question_6;
+package Question_6.Question_6b;
 
 // Class responsible for printing numbers
 class NumberPrinter {
@@ -29,7 +29,7 @@ class ThreadController {
     // Method for ZeroThread to print '0'
     public synchronized void printZero() throws InterruptedException {
         for (int i = 0; i < n; i++) { // Loop to print '0' n times
-            while (current % 2 != 0) { // Wait until it's ZeroThread's turn
+            while (current % 3 != 0) { // Wait until it's ZeroThread's turn
                 wait();
             }
             printer.printZero(); // Print 0
@@ -40,35 +40,35 @@ class ThreadController {
 
     // Method for EvenThread to print even numbers
     public synchronized void printEven() throws InterruptedException {
-        for (int i = 2; i <= n; i += 2) { // Loop to print even numbers
-            while (current % 4 != 3) { // Wait until it's EvenThread's turn
+        for (int i = 2; i <= n; i += 2) { // Print even numbers
+            while (current % 3 != 2) { // Wait until it's EvenThread's turn
                 wait();
             }
             printer.printEven(i); // Print even number
-            current++; // Move to the next state
-            notifyAll(); // Notify other waiting threads
+            current++; // Move to next state
+            notifyAll(); // Notify other threads
         }
     }
 
     // Method for OddThread to print odd numbers
     public synchronized void printOdd() throws InterruptedException {
-        for (int i = 1; i <= n; i += 2) { // Loop to print odd numbers
-            while (current % 4 != 1) { // Wait until it's OddThread's turn
+        for (int i = 1; i <= n; i += 2) { // Print odd numbers
+            while (current % 3 != 1) { // Wait until it's OddThread's turn
                 wait();
             }
             printer.printOdd(i); // Print odd number
-            current++; // Move to the next state
-            notifyAll(); // Notify other waiting threads
+            current++; // Move to next state
+            notifyAll(); // Notify other threads
         }
     }
 }
 
 // Main class to run the program
-public class Question_6a {
+public class Question_6b {
     public static void main(String[] args) {
         int n = 5; // Example input
-        NumberPrinter printer = new NumberPrinter(); // Create a NumberPrinter instance
-        ThreadController controller = new ThreadController(n, printer); // Create a ThreadController instance
+        NumberPrinter printer = new NumberPrinter();
+        ThreadController controller = new ThreadController(n, printer);
 
         // Create and start ZeroThread
         Thread zeroThread = new Thread(() -> {
@@ -103,6 +103,8 @@ public class Question_6a {
         oddThread.start();
     }
 }
-//Terminal output
-// PS D:\DESKTOP\DSA_Assignment>  & 'C:\Program Files\Eclipse Adoptium\jdk-17.0.11.9-hotspot\bin\java.exe' '-XX:+ShowCodeDetailsInExceptionMessages' '-cp' 'C:\Users\asus\AppData\Roaming\Code\User\workspaceStorage\ceb9750205844422ad612c526b471fbf\redhat.java\jdt_ws\DSA_Assignment_ecefc3e6\bin' 'Question_6.Question_6a' 
-//0102030405
+// Terminal command/Output:
+//PS D:\DESKTOP\DSA_Assignment\Question_6\Question_6b>javac-d . Question_6b.java
+//PS D:\DESKTOP\DSA_Assignment\Question_6\Question_6b>java Question_6.Question_6b.Question_6b 01203405
+// Terminal Output:
+// 01203405
