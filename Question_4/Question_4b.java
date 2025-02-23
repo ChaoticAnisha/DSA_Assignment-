@@ -3,6 +3,18 @@ package Question_4;
 import java.util.*;
 
 public class Question_4b {
+    static class State {
+        int pos; // Current position
+        int collected; // Bitmask of collected packages
+        int roads; // Number of roads taken
+
+        State(int pos, int collected, int roads) {
+            this.pos = pos;
+            this.collected = collected;
+            this.roads = roads;
+        }
+    }
+
     public static int findMinimumRoads(int[] packages, int[][] roads) {
         int n = packages.length;
 
@@ -16,76 +28,78 @@ public class Question_4b {
             adj.get(road[1]).add(road[0]);
         }
 
-        // Count total packages
-        int totalPackages = 0;
-        for (int p : packages) {
-            if (p == 1)
-                totalPackages++;
+        // Get all packages to collect
+        int target = 0;
+        for (int i = 0; i < n; i++) {
+            if (packages[i] == 1) {
+                target |= (1 << i); // Set bit for each package location
+            }
         }
-        if (totalPackages == 0)
-            return 0;
+        if (target == 0)
+            return 0; // No packages to collect
 
-        // Try each position as starting point
-        int minRoadsNeeded = Integer.MAX_VALUE;
+        int minRoads = Integer.MAX_VALUE;
 
-        // For each starting position
+        // Try each starting position
         for (int start = 0; start < n; start++) {
-            Queue<int[]> queue = new LinkedList<>();
-            Set<Integer> collected = new HashSet<>();
+            Queue<State> queue = new LinkedList<>();
             Set<String> visited = new HashSet<>();
 
-            // Start BFS from this position
-            queue.offer(new int[] { start, 0, 0 }); // node, roadCount, last position
-            if (packages[start] == 1)
-                collected.add(start);
+            // Collect package at start if exists
+            int initialCollected = 0;
+
+            // Collect all packages within distance 2 of start
+            initialCollected |= collectNearbyPackages(start, packages, adj);
+
+            queue.offer(new State(start, initialCollected, 0));
 
             while (!queue.isEmpty()) {
-                int[] current = queue.poll();
-                int node = current[0];
-                int roadCount = current[1];
-                int last = current[2];
+                State curr = queue.poll();
+                String key = curr.pos + "," + curr.collected;
+
+                if (visited.contains(key))
+                    continue;
+                visited.add(key);
 
                 // If all packages collected and back at start
-                if (collected.size() == totalPackages && node == start) {
-                    minRoadsNeeded = Math.min(minRoadsNeeded, roadCount);
+                if (curr.collected == target && curr.pos == start) {
+                    minRoads = Math.min(minRoads, curr.roads);
                     continue;
                 }
 
-                // Get all nodes within distance 2
-                Set<Integer> reachableNodes = new HashSet<>();
-                // Direct neighbors (distance 1)
-                for (int next : adj.get(node)) {
-                    reachableNodes.add(next);
-                    // Neighbors of neighbors (distance 2)
-                    for (int next2 : adj.get(next)) {
-                        if (next2 != node) {
-                            reachableNodes.add(next2);
-                        }
-                    }
-                }
-
-                // Try moving to each reachable node
-                for (int next : reachableNodes) {
-                    // Calculate distance to next node
-                    int distance = adj.get(node).contains(next) ? 1 : 2;
-                    String path = Math.min(node, next) + "," + Math.max(node, next);
-
-                    // Create new collected set
-                    Set<Integer> newCollected = new HashSet<>(collected);
-                    if (packages[next] == 1) {
-                        newCollected.add(next);
-                    }
-
-                    String state = next + "," + newCollected.hashCode();
-                    if (!visited.contains(state)) {
-                        visited.add(state);
-                        queue.offer(new int[] { next, roadCount + distance, node });
-                    }
+                // Try moving to each adjacent node
+                for (int next : adj.get(curr.pos)) {
+                    // Calculate new collected packages after moving
+                    int newCollected = curr.collected | collectNearbyPackages(next, packages, adj);
+                    queue.offer(new State(next, newCollected, curr.roads + 1));
                 }
             }
         }
 
-        return minRoadsNeeded == Integer.MAX_VALUE ? -1 : minRoadsNeeded;
+        return minRoads == Integer.MAX_VALUE ? -1 : minRoads;
+    }
+
+    // Helper method to collect packages within distance 2 of current position
+    private static int collectNearbyPackages(int pos, int[] packages, List<List<Integer>> adj) {
+        int collected = 0;
+        if (packages[pos] == 1) {
+            collected |= (1 << pos); // Collect package at current position
+        }
+
+        // Collect from direct neighbors (distance 1)
+        for (int next : adj.get(pos)) {
+            if (packages[next] == 1) {
+                collected |= (1 << next); // Collect package at neighbor
+            }
+
+            // Collect from neighbors of neighbors (distance 2)
+            for (int next2 : adj.get(next)) {
+                if (packages[next2] == 1) {
+                    collected |= (1 << next2); // Collect package at neighbor's neighbor
+                }
+            }
+        }
+        return collected;
     }
 
     public static void main(String[] args) {
@@ -100,3 +114,7 @@ public class Question_4b {
         System.out.println("Test case 2: " + findMinimumRoads(packages2, roads2));
     }
 }
+//Terminal output:
+//PS D:\DESKTOP\DSA_Assignment>  & 'C:\Program Files\Eclipse Adoptium\jdk-17.0.11.9-hotspot\bin\java.exe' '-XX:+ShowCodeDetailsInExceptionMessages' '-cp' 'C:\Users\asus\AppData\Roaming\Code\User\workspaceStorage\ceb9750205844422ad612c526b471fbf\redhat.java\jdt_ws\DSA_Assignment_ecefc3e6\bin' 'Question_4.Question_4b' 
+//Test case 1: 2
+//Test case 2: 4
