@@ -5,7 +5,8 @@ import javax.swing.*; // Importing Swing components
 import java.awt.*; // Importing AWT components
 import java.awt.event.*; // Importing AWT event classes
 
-public class question_3b extends JPanel implements ActionListener { // Main class extending JPanel and implementing ActionListener
+public class question_3b extends JPanel implements ActionListener { // Main class extending JPanel and implementing
+                                                                    // ActionListener
     private final int BOARD_WIDTH = 10; // Width of the game board
     private final int BOARD_HEIGHT = 20; // Height of the game board
     private final int BLOCK_SIZE = 30; // Size of each block
@@ -41,7 +42,8 @@ public class question_3b extends JPanel implements ActionListener { // Main clas
                 drawGame(g); // Custom method to draw the game
             }
         };
-        gamePanel.setPreferredSize(new Dimension(BOARD_WIDTH * BLOCK_SIZE, BOARD_HEIGHT * BLOCK_SIZE)); // Setting size of game panel
+        gamePanel.setPreferredSize(new Dimension(BOARD_WIDTH * BLOCK_SIZE, BOARD_HEIGHT * BLOCK_SIZE)); // Setting size
+                                                                                                        // of game panel
         gamePanel.setBackground(Color.BLACK); // Setting background color of game panel
 
         // Preview panel
@@ -52,7 +54,10 @@ public class question_3b extends JPanel implements ActionListener { // Main clas
                 drawPreview(g); // Custom method to draw the preview
             }
         };
-        previewPanel.setPreferredSize(new Dimension(PREVIEW_SIZE * BLOCK_SIZE, PREVIEW_SIZE * BLOCK_SIZE)); // Setting size of preview panel
+        previewPanel.setPreferredSize(new Dimension(PREVIEW_SIZE * BLOCK_SIZE, PREVIEW_SIZE * BLOCK_SIZE)); // Setting
+                                                                                                            // size of
+                                                                                                            // preview
+                                                                                                            // panel
         previewPanel.setBackground(Color.DARK_GRAY); // Setting background color of preview panel
 
         // Side panel for preview and controls
@@ -106,13 +111,6 @@ public class question_3b extends JPanel implements ActionListener { // Main clas
                         break;
                     case KeyEvent.VK_DOWN:
                         dropBlock(); // Drop block
-                        break;
-                    case KeyEvent.VK_SPACE:
-                        while (currentBlock.move(0, 1, board)) {} // Move block down until it can't move
-                        placeBlock(); // Place the block on the board
-                        checkRows(); // Check for full rows
-                        getNextBlock(); // Get the next block
-                        repaint(); // Repaint the panel
                         break;
                 }
             }
@@ -168,7 +166,8 @@ public class question_3b extends JPanel implements ActionListener { // Main clas
 
     private void dropBlock() { // Method to drop the block
         if (!gameOver) { // If game is not over
-            while (currentBlock.move(0, 1, board)) {} // Move block down until it can't move
+            while (currentBlock.move(0, 1, board)) {
+            } // Move block down until it can't move
             placeBlock(); // Place the block on the board
             checkRows(); // Check for full rows
             getNextBlock(); // Get the next block
@@ -203,7 +202,6 @@ public class question_3b extends JPanel implements ActionListener { // Main clas
         int[][] shape = currentBlock.getShape(); // Get the shape of the block
         int x = currentBlock.getX(); // Get the x position of the block
         int y = currentBlock.getY(); // Get the y position of the block
-        Color color = BLOCK_COLORS[currentBlock.getColorIndex()]; // Get the color of the block
 
         for (int i = 0; i < shape.length; i++) { // Loop through the shape
             for (int j = 0; j < shape[i].length; j++) {
@@ -276,7 +274,8 @@ public class question_3b extends JPanel implements ActionListener { // Main clas
                     if (shape[i][j] != 0) { // If the cell is not empty
                         g.fillRect((x + j) * BLOCK_SIZE, (y + i) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE); // Fill the cell
                         g.setColor(Color.BLACK); // Set the color to black
-                        g.drawRect((x + j) * BLOCK_SIZE, (y + i) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE); // Draw the cell border
+                        g.drawRect((x + j) * BLOCK_SIZE, (y + i) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE); // Draw the cell
+                                                                                                        // border
                         g.setColor(BLOCK_COLORS[currentBlock.getColorIndex()]); // Set the color back
                     }
                 }
@@ -302,9 +301,14 @@ public class question_3b extends JPanel implements ActionListener { // Main clas
             for (int i = 0; i < shape.length; i++) { // Loop through the shape
                 for (int j = 0; j < shape[i].length; j++) {
                     if (shape[i][j] != 0) { // If the cell is not empty
-                        g.fillRect(startX + j * BLOCK_SIZE, startY + i * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE); // Fill the cell
+                        g.fillRect(startX + j * BLOCK_SIZE, startY + i * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE); // Fill
+                                                                                                              // the
+                                                                                                              // cell
                         g.setColor(Color.BLACK); // Set the color to black
-                        g.drawRect(startX + j * BLOCK_SIZE, startY + i * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE); // Draw the cell border
+                        g.drawRect(startX + j * BLOCK_SIZE, startY + i * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE); // Draw
+                                                                                                              // the
+                                                                                                              // cell
+                                                                                                              // border
                         g.setColor(BLOCK_COLORS[nextBlock.getColorIndex()]); // Set the color back
                     }
                 }
@@ -423,10 +427,3 @@ class Block { // Block class
         return colorIndex; // Return the color index
     }
 }
-
-//Terminal output
-// PS D:\DESKTOP\DSA_Assignment> & 'C:\Program Files\Eclipse
-// Adoptium\jdk-17.0.11.9-hotspot\bin\java.exe'
-// '-XX:+ShowCodeDetailsInExceptionMessages' '-cp'
-// 'C:\Users\asus\AppData\Roaming\Code\User\workspaceStorage\ceb9750205844422ad612c526b471fbf\redhat.java\jdt_ws\DSA_Assignment_ecefc3e6\bin'
-// 'Question_3.question_3b'
