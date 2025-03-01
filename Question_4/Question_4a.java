@@ -1,51 +1,128 @@
-// // Step 1: Create necessary classes
-// class Tweet {
-//     int userId;
-//     int tweetId;
-//     String tweetDate;
-//     String tweet;
-//     // Constructor and getters/setters
-// }
+public class Question_4a {
 
-// class HashtagCount implements Comparable<HashtagCount> {
-//     String hashtag;
-//     int count;
-//     // Constructor and compareTo method
-// }
+    static class Tweet {
+        int userId;
+        int tweetId;
+        int year;
+        int month;
+        int day;
+        String tweet;
 
-// // Step 2: Database connection
-// public List<Tweet> getTweetsFromDB() {
-//     List<Tweet> tweets = new ArrayList<>();
-//     try (Connection conn = DriverManager.getConnection(url, user, password)) {
-//         String sql = "SELECT * FROM tweets";
-//         // Execute query and populate tweets list
-//     }
-//     return tweets;
-// }
+        public Tweet(int userId, int tweetId, int year, int month, int day, String tweet) {
+            this.userId = userId;
+            this.tweetId = tweetId;
+            this.year = year;
+            this.month = month;
+            this.day = day;
+            this.tweet = tweet;
+        }
+    }
 
-// // Step 3: Main processing method
-// public List<HashtagCount> getTop3TrendingHashtags(List<Tweet> tweets) {
-//     Map<String, Integer> hashtagCountMap = new HashMap<>();
+    public static String[][] getTrendingHashtags(Tweet[] tweets) {
+        Tweet[] februaryTweets = new Tweet[tweets.length];
+        int februaryCount = 0;
+        for (Tweet tweet : tweets) {
+            if (tweet.month == 2 && tweet.year == 2024) {
+                februaryTweets[februaryCount++] = tweet;
+            }
+        }
 
-//     // Step 4: Filter February 2024 tweets and process
-//     for (Tweet tweet : tweets) {
-//         if (tweet.tweetDate.startsWith("2024-02")) {
-//             // Step 5: Extract hashtags
-//             Set<String> tweetHashtags = extractHashtags(tweet.tweet);
+        String[] hashtags = new String[100];
+        int[] counts = new int[100];
+        int hashtagCount = 0;
 
-//             // Step 6: Update counts
-//             for (String hashtag : tweetHashtags) {
-//                 hashtagCountMap.merge(hashtag, 1, Integer::sum);
-//             }
-//         }
-//     }
+        for (int i = 0; i < februaryCount; i++) {
+            String[] tweetHashtags = extractHashtags(februaryTweets[i].tweet);
+            for (String hashtag : tweetHashtags) {
+                if (hashtag != null) {
+                    int index = findHashtag(hashtags, hashtag, hashtagCount);
+                    if (index == -1) {
+                        hashtags[hashtagCount] = hashtag;
+                        counts[hashtagCount] = 1;
+                        hashtagCount++;
+                    } else {
+                        counts[index]++;
+                    }
+                }
+            }
+        }
 
-//     // Step 7: Convert to list and sort
-//     List<HashtagCount> result = hashtagCountMap.entrySet().stream()
-//             .map(e -> new HashtagCount(e.getKey(), e.getValue()))
-//             .sorted()
-//             .collect(Collectors.toList());
+        sortHashtags(hashtags, counts, hashtagCount);
 
-//     // Step 8: Return top 3
-//     return result.subList(0, Math.min(3, result.size()));
-// }
+        String[][] result = new String[3][2];
+        for (int i = 0; i < 3 && i < hashtagCount; i++) {
+            result[i][0] = hashtags[i];
+            result[i][1] = String.valueOf(counts[i]);
+        }
+        return result;
+    }
+
+    private static String[] extractHashtags(String text) {
+        String[] words = text.split(" ");
+        String[] hashtags = new String[words.length];
+        int count = 0;
+        for (String word : words) {
+            if (word.startsWith("#")) {
+                hashtags[count++] = word;
+            }
+        }
+        return hashtags;
+    }
+
+    private static int findHashtag(String[] hashtags, String hashtag, int count) {
+        for (int i = 0; i < count; i++) {
+            if (hashtags[i].equals(hashtag)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private static void sortHashtags(String[] hashtags, int[] counts, int count) {
+        for (int i = 0; i < count - 1; i++) {
+            for (int j = 0; j < count - i - 1; j++) {
+                if (counts[j] < counts[j + 1]
+                        || (counts[j] == counts[j + 1] && hashtags[j].compareTo(hashtags[j + 1]) > 0)) {
+                    int tempCount = counts[j];
+                    counts[j] = counts[j + 1];
+                    counts[j + 1] = tempCount;
+
+                    String tempHashtag = hashtags[j];
+                    hashtags[j] = hashtags[j + 1];
+                    hashtags[j + 1] = tempHashtag;
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Tweet[] tweets = new Tweet[] {
+                new Tweet(135, 13, 2024, 2, 1, "Enjoying a great start to the day. #HappyDay #morningvibes"),
+                new Tweet(136, 14, 2024, 2, 2, "Another #HappyDay with good vibes! #FeelGood"),
+                new Tweet(137, 15, 2024, 2, 3, "Productivity hacks! #workLife #ProductiveDay"),
+                new Tweet(138, 16, 2024, 2, 4, "Exploring new tech frontiers. #TechLife #Innovation"),
+                new Tweet(139, 17, 2024, 2, 5, "Gratitude for today's moments. #HappyDay #Thankful"),
+                new Tweet(140, 18, 2024, 2, 7, "Innovation drives us. #TechLife #FutureTech"),
+                new Tweet(141, 19, 2024, 2, 9, "Connecting with nature's serenity. #Nature #Peaceful")
+        };
+
+        String[][] trendingHashtags = getTrendingHashtags(tweets);
+        System.out.println("Output:");
+        System.out.println("+---------------+-------+");
+        System.out.println("| hashtag       | count |");
+        System.out.println("+---------------+-------+");
+        for (int i = 0; i < trendingHashtags.length && trendingHashtags[i][0] != null; i++) {
+            System.out.printf("| %-13s | %-5s |\n", trendingHashtags[i][0], trendingHashtags[i][1]);
+        }
+        System.out.println("+---------------+-------+");
+    }
+}
+
+// Output:
+// +---------------+-------+
+// | hashtag | count |
+// +---------------+-------+
+// | #HappyDay | 3 |
+// | #TechLife | 2 |
+// | #FeelGood | 1 |
+// +---------------+-------+

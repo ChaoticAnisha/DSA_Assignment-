@@ -48,7 +48,4 @@ public class Question_2b {
 //Terminal output
 // PS D:\DESKTOP\DSA_Assignment> & 'C:\Program Files\Eclipse
 // Adoptium\jdk-17.0.11.9-hotspot\bin\java.exe'
-// '-XX:+ShowCodeDetailsInExceptionMessages' '-cp'
-// 'C:\Users\asus\AppData\Roaming\Code\User\workspaceStorage\ceb9750205844422ad612c526b471fbf\redhat.java\jdt_ws\DSA_Assignment_ecefc3e6\bin'
-// 'Question_2.Question_2b'
 //The indices of the closest pair of points are:[0,3]

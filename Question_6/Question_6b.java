@@ -1,4 +1,4 @@
-package Question_6.Question_6b;
+package Question_6;
 
 // Class responsible for printing numbers
 class NumberPrinter {
